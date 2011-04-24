@@ -1,0 +1,350 @@
+<!DOCTYPE html>  
+<html manifest="_agrisys.manifest">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1"> 
+	<title>Agrisys mobile</title>
+    
+    <link rel="stylesheet" href="style.css" />
+	<link rel="stylesheet" href="jquery.mobile/jquery.mobile-1.0a4.1.min.css" />
+    	
+	<script src="js/jquery-1.5.min.js"></script>
+	<script type="text/javascript" src="js/agrisys.js"></script>
+	<script src="jquery.mobile/jquery.mobile-1.0a4.1.min.js"></script>
+	
+	<script type="text/javascript">
+		//do some initializations
+		$.mobile.page.prototype.options.backBtnText = "Zur&uuml;ck";
+		
+	</script>		
+	
+</head>
+<body>
+
+	
+<!-- MAIN PAGE -->
+<div data-role="page" id="main">
+	<div data-role="header">
+		<h1>Agrisys</h1>
+	</div><!-- /header -->
+	<div data-role="content">			
+		<div id="wrapper">
+			<div id="leftcol" align="center">
+				<div id="mainBtn">
+					<a href="#schlagliste">
+						<img src="images/list_icon.png" height="100"/>
+					</a>
+				</div>
+				<div id="mainBtn">
+					<a href="#newBodenForm">
+						<img src="images/boden.png" height="100"/>
+					</a>
+				</div>
+				<div id="mainBtn">
+					<a href="#newPflanzenschutzForm">
+						<img src="images/pflanzenschutz.png" height="100"/>
+					</a>
+				</div>
+			</div>
+			<div id="rightcol" align="center">
+				<div id="mainBtn">
+					<a href="#newAussaatForm">
+						<img src="images/aussaat.png" height="100"/>
+					</a>
+				</div>
+				<div id="mainBtn">
+					<a href="#newDuengungForm">
+						<img src="images/duengung.png" height="100"/>
+					</a>
+				</div>
+				<div id="mainBtn">
+					<a href="#newErnteForm">
+						<img src="images/ernte.png" height="100"/>
+					</a>
+				</div>
+			</div> 
+		</div>		
+	</div><!-- /content -->
+</div><!-- /page -->
+	
+<!-- SCHLAGLISTE PAGE -->
+<div data-role="page" id="schlagliste">
+	<div data-role="header">
+		<h1>Agrisys</h1>
+	</div><!-- /header -->
+	<div data-role="content">			
+		<ul data-role="listview" data-theme="a">
+             <li id="schlagEntryTemplate" style="display: none">
+         		<a href="#aktivitaetListe" id="-1">
+         			<div class="label">Schlag 1</div>
+					<div class="flaeche" style="font-size: 9pt;">45 ha</div>
+					
+					<span class="kultur" style="font-size: 9pt;">Kultur</span> - 
+					<span class="sorte" style="font-size: 9pt;">Sorte</span>
+         		</a>
+	        </li>            
+        </ul>		
+	</div><!-- /content -->
+</div><!-- /page -->	
+
+
+<!-- Aktivität-Liste PAGE -->
+<div data-role="page" id="aktivitaetListe">
+	<div data-role="header">
+		<h1>Agrisys</h1>
+	</div><!-- /header -->
+	<div data-role="content">			
+		<ul data-role="listview" data-inset="false" data-theme="a" data-dividertheme="d">
+            <li id="actEntryTemplate" style="display: none" entryid="-1">
+         		<a href="#actDetails" id="-1">
+         			<div class="label">Schlag 1</div>
+					<div class="flaeche" style="font-size: 9pt;">45 ha</div>
+         		</a>
+	        </li>            
+        </ul>		
+	</div><!-- /content -->
+</div><!-- /page -->
+
+
+<!-- Aktivität-Details PAGE -->
+<div data-role="page" id="actDetails">
+	<div data-role="header">
+		<h1>Agrisys</h1>
+	</div><!-- /header -->
+	<div data-role="content">			
+		<ul data-role="listview" data-inset="false" data-theme="a" data-dividertheme="d">
+	        <li id="actDetailsEntryTemplate" style="display: none">
+				<span class="label">Label</span>
+				<span class="value">value</span>
+			</li>
+        </ul>	
+        	
+	</div><!-- /content -->
+</div><!-- /page -->
+
+
+<!-- Bodenbearbeitungform PAGE -->
+<div data-role="page" id="newBodenForm">
+	<div data-role="header" data-position="inline">
+		<a href="#main" data-icon="delete">Abbrechen</a>
+		<h1>Agrisys</h1>
+		<a href="#main" id="saveNewBoden" data-icon="check" data-theme="b">Speichern</a>
+	</div><!-- /header -->
+	<div data-role="content">					
+		<form method="post" id="newBodenForm">
+			<div>
+				<label class="mandatory" for="bodenbearbeitungTypInput">Typ</label>
+				<select name="bodenbearbeitungTypInput"></select>
+			</div>
+			<div>
+				<label class="mandatory" for="schlagInput">Schlag</label>
+				<select name="schlagInput"></select>
+			</div>
+			<div>
+				<label class="mandatory" for="date">Datum</label>
+				<input type="date" name="dateInput" id="dateInput" value=""/>
+			</div>
+			<div>
+				<label class="mandatory" for="flaeche"><strong>Fläche in ha</strong></label>
+				<input type="number" name="flaeche" id="flaeche"/>
+			</div>
+			<div>
+				<label for="remark">Bemerkung</label>
+				<textarea cols="40" rows="4" name="remark" id="remark"></textarea>
+			</div>
+		</form>        	
+	</div><!-- /content -->
+</div><!-- /page -->
+
+<script type="text/javascript">
+	var date = getDateString(new Date());
+	$('#newBodenForm #dateInput').attr('value', date);
+</script>
+
+	
+<!-- Eingabeformular für Aussaat-Aktivität -->
+<div data-role="page" id="newAussaatForm">
+	<div data-role="header" data-position="inline">
+		<a href="#main" data-icon="delete">Abbrechen</a>
+		<h1>Agrisys</h1>
+		<a href="#main" id="saveNewAussaat" data-icon="check" data-theme="b">Speichern</a>
+	</div><!-- /header -->
+	<div data-role="content">					
+		<form method="post" id="newAussaatForm">
+			<div>
+				<label class="mandatory" for="schlagInput">Schlag</label>
+				<select name="schlagInput"></select>
+			</div>
+			<div>
+				<label class="mandatory" for="date">Datum</label>
+				<input type="date" name="dateInput" id="dateInput"/>
+			</div>
+			<div>
+				<label class="mandatory" for="flaeche"><strong>Fl&auml;che in ha</strong></label>
+				<input type="number" name="flaeche" id="flaeche" />
+			</div>
+			<div>
+				<label class="mandatory" for="kgProHa"><strong>kg/ha</strong></label>
+				<input type="number" name="kgProHa" id="kgProHa" />
+			</div>
+			<div>
+				<label for="beize">Beize</label>
+				<input type="text" name="beize" id="beize"/>
+			</div>
+			<div>
+				<label for="remark">Bemerkung</label>
+				<textarea cols="40" rows="4" name="remark" id="remark"></textarea>
+			</div>
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+	var date = getDateString(new Date());
+	$('#newAussaatForm #dateInput').attr('value', date);
+</script>
+
+	
+<!-- Eingabeformular für Duengung-Aktivität -->
+<div data-role="page" id="newDuengungForm">
+	<div data-role="header" data-position="inline">
+		<a href="#main" data-icon="delete">Abbrechen</a>
+		<h1>Agrisys</h1>
+		<a href="#main" id="saveNewDuengung" data-icon="check" data-theme="b">Speichern</a>
+	</div><!-- /header -->
+	<div data-role="content">	
+		<form method="post" id="newDuengungForm">
+			<div>
+				<label class="mandatory" for="duengerartInput">D&uuml;ngerart</label>
+				<select name="duengerartInput"></select>
+			</div>
+			<div>
+				<label class="mandatory" for="schlagInput">Schlag</label>
+				<select name="schlagInput"></select>
+			</div>
+			<div>
+				<label class="mandatory" for="date">Datum</label>
+				<input type="date" name="dateInput" id="dateInput"   />
+			</div>
+			<div>
+				<label class="mandatory" for="flaeche"><strong>Fl&auml;che in ha</strong></label>
+				<input type="number" name="flaeche" id="flaeche" />
+			</div>
+			<div>
+				<label class="mandatory" for="kgProHa"><strong>kg/ha</strong></label>
+				<input type="number" name="kgProHa" id="kgProHa" />
+			</div>
+			<div>
+				<label for="ec">EC</label>
+				<input type="number" name="ec" id="ec" />
+			</div>	
+			<div>
+				<label for="remark">Bemerkung</label>
+				<textarea cols="40" rows="4" name="remark" id="remark"></textarea>
+			</div>	
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+	var date = getDateString(new Date());
+	$('#newDuengungForm #dateInput').attr('value', date);
+</script>
+
+	
+<!-- Eingabeformular für Pflanzenschutz-Aktivität -->
+<div data-role="page" id="newPflanzenschutzForm">
+	<div data-role="header" data-position="inline">
+		<a href="#main" data-icon="delete">Abbrechen</a>
+		<h1>Agrisys</h1>
+		<a href="#main" id="saveNewPflanzenschutz" data-icon="check" data-theme="b">Speichern</a>
+	</div><!-- /header -->
+	<div data-role="content">	
+		<form method="post" id="newPflanzenschutzForm">
+			<div>
+				<label class="mandatory" for="psMittelInput">PS-Mittel</label>
+				<select name="psMittelInput"></select>
+			</div>
+			<div>
+				<label class="mandatory" for="schlagInput">Schlag</label>
+				<select name="schlagInput"></select>
+			</div>
+			<div>
+				<label class="mandatory" for="date">Datum</label>
+				<input type="date" name="dateInput" id="dateInput"   />
+			</div>
+			<div>
+				<label class="mandatory" for="flaeche"><strong>Fl&auml;che in ha</strong></label>
+				<input type="number" name="flaeche" id="flaeche" />
+			</div>
+			<div>
+				<label class="mandatory" for="kgProHa"><strong>kg/ha</strong></label>
+				<input type="number" name="kgProHa" id="kgProHa" />
+			</div>
+			<div>
+				<label for="ec">EC</label>
+				<input type="number" name="ec" id="ec" />
+			</div>
+			<div>
+				<label for="indikation">Indikation</label>
+				<input type="number" name="indikation" id="indikation" />
+			</div>
+			<div>
+				<label for="remark">Bemerkung</label>
+				<textarea cols="40" rows="4" name="remark" id="remark"></textarea>
+			</div>
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+	var date = getDateString(new Date());
+	$('#newPflanzenschutzForm #dateInput').attr('value', date);
+</script>
+
+	
+<!-- Eingabeformular für Ernte-Aktivität -->
+<div data-role="page" id="newErnteForm">
+	<div data-role="header" data-position="inline">
+		<a href="#main" data-icon="delete">Abbrechen</a>
+		<h1>Agrisys</h1>
+		<a href="#main" id="saveNewErnte" data-icon="check" data-theme="b">Speichern</a>
+	</div><!-- /header -->
+	<div data-role="content">	
+		<form method="post" id="newErnteForm">
+			<div>
+				<label class="mandatory" for="schlagInput">Schlag</label>
+				<select name="schlagInput"></select>
+			</div>
+			<div>
+				<label class="mandatory" for="date">Datum</label>
+				<input type="date" name="dateInput" id="dateInput"/>
+			</div>
+			<div>
+				<label class="mandatory" for="flaeche"><strong>Fl&auml;che in ha</strong></label>
+				<input type="number" name="flaeche" id="flaeche" />
+			</div>
+			<div>
+				<label class="mandatory" for="dtProHa"><strong>dt/ha</strong></label>
+				<input type="number" name="dtProHa" id="dtProHa"/>
+			</div>
+			<div>
+				<label class="mandatory" for="gesamtmenge"><strong>Gesamtmenge</strong></label>
+				<input type="number" name="gesamtmenge" id="gesamtmenge"/>
+			</div>
+			<div>
+				<label for="anlieferung">Anlieferung</label>
+				<input type="text" name="anlieferung" id="anlieferung"/>
+			</div>		
+			<div>
+				<label for="remark">Bemerkung</label>
+				<textarea cols="40" rows="4" name="remark" id="remark"></textarea>
+			</div>				
+		</form>
+	</div>
+</div>
+
+<script type="text/javascript">
+	//do some initialization
+	init();
+</script>
+</body>
+</html>
