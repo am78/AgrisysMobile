@@ -1,5 +1,5 @@
-var baseUrl = 'http://agri-sys.appspot.com';
-//var baseUrl = 'http://192.168.178.26:8888';
+//var baseUrl = 'http://agri-sys.appspot.com';
+var baseUrl = 'http://192.168.178.26:8888';
 var schlagData;
 var actListData;
 var stammdaten;
@@ -75,9 +75,23 @@ function init() {
 	$('#saveNewErnte').live('click',function(event, ui){
 		onSaveNewErnte($('#newErnteForm'));
 	});
-	
+
+	$('#mainBtn a').live('tap',function(event, ui){
+		refreshGeoPosition();
+	});	
 	$('#mainBtn a').live('click',function(event, ui){
 		refreshGeoPosition();
+	});
+	
+	$('#takeFoto a').live('tap',function(event, ui){
+		//TODO get ID of current context
+		var id = "401"; 
+		window.AGRISYS.takePicture(id);
+	});	
+	$('#takeFoto a').live('click',function(event, ui){
+		//TODO get ID of current context
+		var id = "401"; 
+		window.AGRISYS.takePicture(id);
 	});
 	
 
@@ -672,6 +686,15 @@ function loadAndDisplayActEntry(id) {
 		var kgProHa = act.kgProHa;
 		var ec = act.ec;
 		var indikation = act.indikation;
+		var psMittel = act.psMittel.name;
+		
+		//PS-Mittel
+		var row = $('#actDetailsEntryTemplate').clone();
+		row.removeAttr('id');
+		row.removeAttr('style');
+		row.find('.label').text("PS-Mittel: ");
+		row.find('.value').text(psMittel);
+		row.appendTo('#actDetails ul');
 		
 		//kg/ha
 		var row = $('#actDetailsEntryTemplate').clone();

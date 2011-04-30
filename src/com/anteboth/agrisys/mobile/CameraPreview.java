@@ -41,7 +41,7 @@ public class CameraPreview extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		setContentView(R.layout.camerapreview);
 
 		preview = new Preview(this);
 		((FrameLayout) findViewById(R.id.preview)).addView(preview);
@@ -49,8 +49,8 @@ public class CameraPreview extends Activity {
 		buttonClick = (Button) findViewById(R.id.buttonClick);
 		buttonClick.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				preview.camera.takePicture(shutterCallback, rawCallback,
-						jpegCallback);
+				//take picture and stop preview
+				preview.camera.takePicture(shutterCallback, null, jpegCallback);
 			}
 		});
 
@@ -64,11 +64,11 @@ public class CameraPreview extends Activity {
 	};
 
 	/** Handles data for raw picture */
-	PictureCallback rawCallback = new PictureCallback() {
-		public void onPictureTaken(byte[] data, Camera camera) {
-			Log.d(TAG, "onPictureTaken - raw");
-		}
-	};
+//	PictureCallback rawCallback = new PictureCallback() {
+//		public void onPictureTaken(byte[] data, Camera camera) {
+//			Log.d(TAG, "onPictureTaken - raw");
+//		}
+//	};
 
 	/** Handles data for jpeg picture */
 	PictureCallback jpegCallback = new PictureCallback() {
@@ -76,12 +76,9 @@ public class CameraPreview extends Activity {
 			FileOutputStream outStream = null;
 			try {
 				// write to local sandbox file system
-				// outStream =
-				// CameraDemo.this.openFileOutput(String.format("%d.jpg",
-				// System.currentTimeMillis()), 0);
+				outStream = CameraPreview.this.openFileOutput(String.format("%d.jpg", System.currentTimeMillis()), 0);
 				// Or write to sdcard
-				outStream = new FileOutputStream(String.format(
-						"/sdcard/%d.jpg", System.currentTimeMillis()));
+//				outStream = new FileOutputStream(String.format("/sdcard/%d.jpg", System.currentTimeMillis()));
 				outStream.write(data);
 				outStream.close();
 				Log.d(TAG, "onPictureTaken - wrote bytes: " + data.length);

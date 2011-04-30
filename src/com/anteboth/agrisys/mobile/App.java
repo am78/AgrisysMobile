@@ -22,8 +22,8 @@ import android.widget.Toast;
 
 public class App extends Activity {
 
-	private static final String LOGIN_URL = "http://agri-sys.appspot.com/mobile/loginstatus.jsp";
-//	private static final String LOGIN_URL = "http://192.168.178.26:8888/mobile/loginstatus.jsp";
+//	private static final String LOGIN_URL = "http://agri-sys.appspot.com/mobile/loginstatus.jsp";
+	private static final String LOGIN_URL = "http://192.168.178.26:8888/mobile/loginstatus.jsp";
 
 	public static final String APP_URL = "file:///android_asset/www/mobile/index.html";
 	private static final String JS_INTERFACE_NAME = "AGRISYS";
@@ -53,11 +53,10 @@ public class App extends Activity {
 		appView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 		
 		//load the login url
-		appView.loadUrl(LOGIN_URL);
+//		appView.loadUrl(LOGIN_URL);
 		
-		
-//		Intent intent = new Intent(App.this, CameraPreview.class);
-//        startActivity(intent);
+		Intent intent = new Intent(App.this, CameraPreview.class);
+        startActivity(intent);
 	}
 
 	final class MyWebChromeClient extends WebChromeClient {
@@ -84,6 +83,10 @@ public class App extends Activity {
 			}
 		}
 		
+		public void takePicture(String id) {
+			onTakePicture(id);
+		}
+		
 		public void showBusyIndicator() {
 			showProgressDialog();
 		}
@@ -100,26 +103,26 @@ public class App extends Activity {
 		super.onConfigurationChanged(newConfig);
 	} 
 
+	public void onTakePicture(String id) {
+		handler.sendEmptyMessage(TAKE_PICTURE);
+	}
 	public void loggedIn() {
 		//load app url after logged in
 		handler.sendEmptyMessage(LOAD_APP_URL);
 	}
-	
 	public void showProgressDialog() {
 		handler.sendEmptyMessage(SHOW_PROGRESS);
 	}
-	
 	public void hideProgressDialog() {
 		handler.sendEmptyMessage(HIDE_PROGRESS);
 	}
-	
-	
 	
 	private int progressCounter = 0;
 	private ProgressDialog progressDialog;
 	private static final int LOAD_APP_URL = 0;
 	private static final int SHOW_PROGRESS = 1;
 	private static final int HIDE_PROGRESS = 2;
+	private static final int TAKE_PICTURE = 3;
 	
 	Handler handler = new Handler(){
 		@Override
@@ -147,6 +150,10 @@ public class App extends Activity {
 						progressDialog.dismiss();
 					}
 					break;
+				case TAKE_PICTURE:
+					Intent intent = new Intent(App.this, CameraPreview.class);
+			        startActivity(intent);
+			        break;
 			}
 		}
 	};
