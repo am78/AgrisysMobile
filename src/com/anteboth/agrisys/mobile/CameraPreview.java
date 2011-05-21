@@ -17,6 +17,11 @@
 package com.anteboth.agrisys.mobile;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.ShutterCallback;
@@ -37,6 +42,8 @@ public class CameraPreview extends Activity {
 	protected static String refId;
 	protected static String baseUrl;
 	protected static String uploadUrl;
+	private ProgressDialog progressDialog;
+
 
 	/** Called when the activity is first created. */
 	@Override
@@ -67,15 +74,19 @@ public class CameraPreview extends Activity {
 
 	/** Handles data for jpeg picture */
 	PictureCallback jpegCallback = new PictureCallback() {
+
 		public void onPictureTaken(byte[] data, Camera camera) {
-			Worker w = new Worker(data);
-			Thread t = new Thread(w);
+			//display a progess dialog
+			progressDialog = ProgressDialog.show(
+					CameraPreview.this, "Bild-Upload", "Bitte Warten...", true);
+			
+			//start upload in separate thread
+			Thread t = new Thread(new Worker(data));
 			t.start();
 		}
 	};
 	
 	class Worker implements Runnable {
-
 		private byte[] data;
 
 		public Worker(byte[] data) {
@@ -86,34 +97,45 @@ public class CameraPreview extends Activity {
 		public void run() {
 			Log.d(TAG, "onPictureTaken - jpeg");
 			try {
-//				FileOutputStream outStream = null;
-//				String fName = "tmpImageFile.jpeg";
-//				// write to local sandbox file system
-//				outStream = CameraPreview.this.openFileOutput(fName, MODE_WORLD_READABLE);
-//				// Or write to sdcard
-//				//outStream = new FileOutputStream(String.format("/sdcard/%d.jpg", System.currentTimeMillis()));
-//				outStream.write(data);
-//				outStream.close();
-				
 				String id = refId;
+				//downscale image to max width of 1000 px
+				data = ImageHelper.getDownScaledAndCompressedJpegImage(data, 1000);
+				//start the upload
 				new FileUploader().upload(data, id, baseUrl, uploadUrl, getApplicationContext());
+				//if no exception occurred, the upload was successfull
 				Log.d(TAG, "onPictureTaken - wrote bytes: " + data.length);
-				
-				//go back and close image preview
-				closePreview();
+				displayUploadNotification();
 			} catch (Exception e) {
-				e.printStackTrace();
-				//Log.e(TAG, e.getLocalizedMessage());
+				Log.w(TAG, e.getLocalizedMessage());
 				Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG);
 			} finally {
+				//close progress dialog
+				progressDialog.dismiss();
+				//go back and close image preview
+				closePreview();
 			}
 		}
-		
 	}
 	
 
 	protected void closePreview() {
-		//TODO close preview
+		//close preview activity
+		this.finish();
 	}
 
+
+	public void displayUploadNotification() {
+		Context context = getApplicationContext();
+		CharSequence contentTitle = "Agrisys";
+		CharSequence contentText = "Bild-Upload erfolgreich abgeschlossen.";
+		Intent notificationIntent = new Intent(this, CameraPreview.class);
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+		
+		int icon = R.drawable.icon;
+		CharSequence tickerText = "Bild-Upload erfolgreich!";
+		long when = System.currentTimeMillis();
+
+		Notification notification = new Notification(icon, tickerText, when);
+		notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
+	}
 }

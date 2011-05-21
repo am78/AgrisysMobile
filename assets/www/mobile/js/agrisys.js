@@ -809,10 +809,10 @@ function loadAndDisplayActEntry(id) {
 	}
 	
 	//display foto list link
-//	$('#actDetails ul').append('<li><a href="#fotoList" data-role="button">Fotos</a></li>');
+	$('#actDetails ul').append('<li><a href="#fotoList" data-role="button">Fotos</a></li>');
 
 	//display new foto link
-//	$('#actDetails ul').append('<li id="takeFoto"> <a id="' + id + '" data-role="button" href="">Foto aufnehmen</a> </li>');
+	$('#actDetails ul').append('<li id="takeFoto"> <a id="' + id + '" data-role="button" href="">Foto aufnehmen</a> </li>');
 	
 	//don't forget to refresh the list
 	$('#actDetails ul').listview('refresh');
