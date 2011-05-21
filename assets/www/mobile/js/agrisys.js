@@ -1,5 +1,6 @@
-//var baseUrl = 'http://agri-sys.appspot.com';
-var baseUrl = 'http://192.168.178.26:8888';
+var baseUrl = 'http://agri-sys.appspot.com';
+//var baseUrl = 'http://192.168.178.23:8888';
+//var baseUrl = '';
 var schlagData;
 var actListData;
 var stammdaten;
@@ -7,7 +8,9 @@ var currentSchlagErntejahrId;
 var initialized = false;
 var longitude = -1;
 var latitude = -1;
-
+var currentActivity;
+var imageUploadUrl = '/upload'; 
+	
 //init
 function init() {
 	blockUI();
@@ -21,7 +24,11 @@ function init() {
 	//called when Schlagliste is about to open
 	$('#schlagliste').live('pagebeforeshow',function(event, ui){
 		loadAndDisplaySchlagListData();
-	});		
+	});
+	
+	$('#fotoList').live('pagebeforeshow',function(event, ui){
+		loadAndDisplayFotoListData();
+	});
 
 	//listener for tap/click on schlagliste item 
 	$('#schlagliste li a').live('tap',function(event, ui){
@@ -84,14 +91,12 @@ function init() {
 	});
 	
 	$('#takeFoto a').live('tap',function(event, ui){
-		//TODO get ID of current context
-		var id = "401"; 
-		window.AGRISYS.takePicture(id);
+		var id = $(this).attr('id');
+		takeFoto(id);
 	});	
 	$('#takeFoto a').live('click',function(event, ui){
-		//TODO get ID of current context
-		var id = "401"; 
-		window.AGRISYS.takePicture(id);
+		var id = $(this).attr('id');
+		takeFoto(id);
 	});
 	
 
@@ -99,6 +104,11 @@ function init() {
 	refreshGeoPosition();
 	
 	unblockUI();
+}
+
+function takeFoto(id) {
+	//	alert("take foto: " + id);
+	window.AGRISYS.takePicture(id, imageUploadUrl);
 }
 
 function loadStammdaten() {
@@ -119,7 +129,7 @@ function loadStammdaten() {
 			unblockUI();
 			//perform some post init task after the markup and the initial data has been loaded
 			postInit();
-			alert("Stammdaten geladen.");
+			alert('Stammdaten geladen');
 		},
 		error: function(error) { 
 			unblockUI();
@@ -140,11 +150,10 @@ function refreshGeoPosition() {
 function geoSuccess(position) {
 	latitude = position.coords.latitude;
 	longitude = position.coords.longitude;
-	//alert(position);
 }
  
 function geoError(msg) {
-	//alert(typeof msg == 'string' ? msg : "error");
+	alert(typeof msg == 'string' ? msg : "error");
 }
 
 //perform some post init tasks after markup and initial data has been loaded
@@ -196,6 +205,10 @@ function postInit2() {
 			$('select[name=schlagInput]').append(option);
 		}
 	}
+}
+
+function getDateString2(date) {
+	return date.substring(0, 10);
 }
 
 function getDateString(date) {
@@ -395,7 +408,6 @@ function loadAndDisplayAktivitaetListData(schlagErntejahrId) {
 		success: function(data) {
 			onActListDataLoaded(data, schlagErntejahrId);
 			unblockUI();
-			alert("Aktivitätsliste geladen.");
 		},
 		error: function(error) { 
 			unblockUI();
@@ -459,7 +471,7 @@ function createEntry(data) {
 	var id = data.id;
 	var datum = data.datum;
 	if (data.datum != null && data.datum.length > 9) {
-		datum = data.datum.substring(0, 10);
+		datum = getDateString2(data.datum);
 	}
 	var flaeche = data.flaeche;
 	//var typ = getTypeString(data.type);
@@ -521,6 +533,32 @@ function getKulturString(id) {
 	return kultur;
 }
 
+function loadAndDisplayFotoListData() {
+	var atts = currentActivity.attachments;
+	$('#fotoList ul li').hide();
+	
+	if (atts != null) {
+		for (var i=0; i<atts.length; i++) {
+			var blobKey = atts[i].blobKey;
+			var imageUrl = baseUrl + '/upload/serve?blob-key=' + blobKey;
+			var previewUrl = imageUrl + '&qual=preview';
+			var datum = getDateString2(atts[i].date);
+			
+			var newEntryRow = $('#imagePreviewTemplate').clone();
+			newEntryRow.removeAttr('id');
+			newEntryRow.removeAttr('style');
+
+			newEntryRow.find('.date').text(date);
+			newEntryRow.find('.preview').text('');
+			newEntryRow.find('.preview').append(
+				'<a target="image" href="' + imageUrl + '"><img src="' + previewUrl + '" alt="preview image" /> </a>');
+
+			newEntryRow.appendTo('#fotoList ul');
+
+		}
+	}
+}
+
 function loadAndDisplaySchlagListData() {
 	if (initialized) {
 		return;
@@ -537,7 +575,6 @@ function loadAndDisplaySchlagListData() {
 			onSchlagDataLoaded(data);
 			postInit2();
 			unblockUI();
-			alert("Schlagliste geladen.");
 		},
 		error: function(error) { 
 			unblockUI();
@@ -571,7 +608,6 @@ function onSchlagDataLoaded(data) {
 		newEntryRow.find('.sorte').text(sorte);
 
 		newEntryRow.appendTo('#schlagliste ul');
-
 	});
 }
 
@@ -586,6 +622,8 @@ function loadAndDisplayActEntry(id) {
 		}
 	}
 	
+	currentActivity = act;
+	
 	if (act == null) {
 		return;
 	}
@@ -594,7 +632,7 @@ function loadAndDisplayActEntry(id) {
 	$('#actDetails ul li').hide();
 	//$('#actDetails ul h1').hide();
 	
-	var datum = act.datum.substring(0, 10);
+	var datum = getDateString2(act.datum);
 	var flaeche = act.flaeche;
 	var typ = getTypeString(act.type);
 	var bem = act.bemerkung;
@@ -759,7 +797,7 @@ function loadAndDisplayActEntry(id) {
 	row.find('.label').text("Bemerkung: ");
 	row.find('.value').text(bem);
 	row.appendTo('#actDetails ul');
-	
+
 	
 	//display link to map (if location for record is set)
 	var longitude = act.longitude;
@@ -769,6 +807,12 @@ function loadAndDisplayActEntry(id) {
 		$('#actDetails ul').append('<li><a target="_blank" href="map.html?long=' 
 				+ longitude + '&lat=' + latitude + '">Karte</a></li>');
 	}
+	
+	//display foto list link
+//	$('#actDetails ul').append('<li><a href="#fotoList" data-role="button">Fotos</a></li>');
+
+	//display new foto link
+//	$('#actDetails ul').append('<li id="takeFoto"> <a id="' + id + '" data-role="button" href="">Foto aufnehmen</a> </li>');
 	
 	//don't forget to refresh the list
 	$('#actDetails ul').listview('refresh');

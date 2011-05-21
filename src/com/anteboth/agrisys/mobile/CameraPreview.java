@@ -16,10 +16,6 @@
 
 package com.anteboth.agrisys.mobile;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import android.app.Activity;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
@@ -30,12 +26,17 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 public class CameraPreview extends Activity {
-	private static final String TAG = "CameraDemo";
-	Camera camera;
-	Preview preview;
-	Button buttonClick;
+
+	private static final String TAG = "CameraPreview";
+	private Preview preview;
+	private Button buttonClick;
+	
+	protected static String refId;
+	protected static String baseUrl;
+	protected static String uploadUrl;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -45,7 +46,7 @@ public class CameraPreview extends Activity {
 
 		preview = new Preview(this);
 		((FrameLayout) findViewById(R.id.preview)).addView(preview);
-
+		
 		buttonClick = (Button) findViewById(R.id.buttonClick);
 		buttonClick.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
@@ -63,33 +64,56 @@ public class CameraPreview extends Activity {
 		}
 	};
 
-	/** Handles data for raw picture */
-//	PictureCallback rawCallback = new PictureCallback() {
-//		public void onPictureTaken(byte[] data, Camera camera) {
-//			Log.d(TAG, "onPictureTaken - raw");
-//		}
-//	};
 
 	/** Handles data for jpeg picture */
 	PictureCallback jpegCallback = new PictureCallback() {
 		public void onPictureTaken(byte[] data, Camera camera) {
-			FileOutputStream outStream = null;
-			try {
-				// write to local sandbox file system
-				outStream = CameraPreview.this.openFileOutput(String.format("%d.jpg", System.currentTimeMillis()), 0);
-				// Or write to sdcard
-//				outStream = new FileOutputStream(String.format("/sdcard/%d.jpg", System.currentTimeMillis()));
-				outStream.write(data);
-				outStream.close();
-				Log.d(TAG, "onPictureTaken - wrote bytes: " + data.length);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-			}
-			Log.d(TAG, "onPictureTaken - jpeg");
+			Worker w = new Worker(data);
+			Thread t = new Thread(w);
+			t.start();
 		}
 	};
+	
+	class Worker implements Runnable {
+
+		private byte[] data;
+
+		public Worker(byte[] data) {
+			this.data = data;
+		}
+
+		@Override
+		public void run() {
+			Log.d(TAG, "onPictureTaken - jpeg");
+			try {
+//				FileOutputStream outStream = null;
+//				String fName = "tmpImageFile.jpeg";
+//				// write to local sandbox file system
+//				outStream = CameraPreview.this.openFileOutput(fName, MODE_WORLD_READABLE);
+//				// Or write to sdcard
+//				//outStream = new FileOutputStream(String.format("/sdcard/%d.jpg", System.currentTimeMillis()));
+//				outStream.write(data);
+//				outStream.close();
+				
+				String id = refId;
+				new FileUploader().upload(data, id, baseUrl, uploadUrl, getApplicationContext());
+				Log.d(TAG, "onPictureTaken - wrote bytes: " + data.length);
+				
+				//go back and close image preview
+				closePreview();
+			} catch (Exception e) {
+				e.printStackTrace();
+				//Log.e(TAG, e.getLocalizedMessage());
+				Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG);
+			} finally {
+			}
+		}
+		
+	}
+	
+
+	protected void closePreview() {
+		//TODO close preview
+	}
 
 }

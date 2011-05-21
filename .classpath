@@ -4,5 +4,8 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="lib" path="libs/phonegap.0.9.4.jar"/>
+	<classpathentry kind="src" path="src_thirdparty"/>
+	<classpathentry kind="lib" path="libs/httpmime-4.1.1.jar"/>
+	<classpathentry kind="lib" path="libs/google-api-client-http-1.2.1-alpha.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

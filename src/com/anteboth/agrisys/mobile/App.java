@@ -22,8 +22,9 @@ import android.widget.Toast;
 
 public class App extends Activity {
 
-//	private static final String LOGIN_URL = "http://agri-sys.appspot.com/mobile/loginstatus.jsp";
-	private static final String LOGIN_URL = "http://192.168.178.26:8888/mobile/loginstatus.jsp";
+	//private static final String BASE_URL = "http://192.168.178.23:8888";
+	private static final String BASE_URL = "https://agri-sys.appspot.com";
+	private static final String LOGIN_URL = BASE_URL + "/mobile/loginstatus.jsp";
 
 	public static final String APP_URL = "file:///android_asset/www/mobile/index.html";
 	private static final String JS_INTERFACE_NAME = "AGRISYS";
@@ -53,10 +54,10 @@ public class App extends Activity {
 		appView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 		
 		//load the login url
-//		appView.loadUrl(LOGIN_URL);
+		appView.loadUrl(LOGIN_URL);
 		
-		Intent intent = new Intent(App.this, CameraPreview.class);
-        startActivity(intent);
+//		Intent intent = new Intent(App.this, CameraPreview.class);
+//        startActivity(intent);
 	}
 
 	final class MyWebChromeClient extends WebChromeClient {
@@ -83,8 +84,8 @@ public class App extends Activity {
 			}
 		}
 		
-		public void takePicture(String id) {
-			onTakePicture(id);
+		public void takePicture(String id, String uploadUrl) {
+			onTakePicture(id, uploadUrl);
 		}
 		
 		public void showBusyIndicator() {
@@ -103,7 +104,13 @@ public class App extends Activity {
 		super.onConfigurationChanged(newConfig);
 	} 
 
-	public void onTakePicture(String id) {
+	public void onTakePicture(String id, String uploadUrl) {
+		//set required parameters which will be needed to perform a later image upload
+		CameraPreview.baseUrl = BASE_URL;
+		CameraPreview.uploadUrl = uploadUrl;
+		CameraPreview.refId = id;
+		
+		//take the picture
 		handler.sendEmptyMessage(TAKE_PICTURE);
 	}
 	public void loggedIn() {
