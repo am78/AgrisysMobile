@@ -153,7 +153,7 @@ function geoSuccess(position) {
 }
  
 function geoError(msg) {
-	alert(typeof msg == 'string' ? msg : "error");
+	alert(typeof msg == 'string' ? msg : "Fehler beim laden der GEO-Position.");
 }
 
 //perform some post init tasks after markup and initial data has been loaded
@@ -249,7 +249,7 @@ function onSaveNewDuengung(form) {
 	var type = 2;
 	var fl = getDouble($('#newDuengungForm input[name=flaeche]').val());
 	var date = $('#newDuengungForm input[name=dateInput]').val();
-	var remark = $('#newBodenForm textarea[name=remark]').val();
+	var remark = $('#newDuengungForm textarea[name=remark]').val();
 	var duengerart = $('#newDuengungForm select[name=duengerartInput]').val();
 	var schlagErntejahrId = $('#newDuengungForm select[name=schlagInput]').val();
 	var kgProHa = getDouble($('#newDuengungForm input[name=kgProHa]').val());
@@ -273,7 +273,7 @@ function onSaveNewAussaat(form) {
 	var type = 1;
 	var fl = getDouble($('#newAussaatForm input[name=flaeche]').val());
 	var date = $('#newAussaatForm input[name=dateInput]').val();
-	var remark = $('#newBodenForm textarea[name=remark]').val();
+	var remark = $('#newAussaatForm textarea[name=remark]').val();
 	var schlagErntejahrId = $('#newAussaatForm select[name=schlagInput]').val();
 	var kgProHa = getDouble($('#newAussaatForm input[name=kgProHa]').val());
 	var beize = $('#newAussaatForm input[name=beize]').val();
@@ -295,7 +295,7 @@ function onSaveNewPflanzenschutz(form) {
 	var type = 4;
 	var fl = getDouble($('#newPflanzenschutzForm input[name=flaeche]').val());
 	var date = $('#newPflanzenschutzForm input[name=dateInput]').val();
-	var remark = $('#newBodenForm textarea[name=remark]').val();
+	var remark = $('#newPflanzenschutzForm textarea[name=remark]').val();
 	var psMittel = $('#newPflanzenschutzForm select[name=psMittelInput]').val();
 	var schlagErntejahrId = $('#newPflanzenschutzForm select[name=schlagInput]').val();
 	var kgProHa = getDouble($('#newPflanzenschutzForm input[name=kgProHa]').val());
@@ -321,7 +321,7 @@ function onSaveNewErnte(form) {
 	var type = 3;
 	var fl = getDouble($('#newErnteForm input[name=flaeche]').val());
 	var date = $('#newErnteForm input[name=dateInput]').val();
-	var remark = $('#newBodenForm textarea[name=remark]').val();
+	var remark = $('#newErnteForm textarea[name=remark]').val();
 	var schlagErntejahrId = $('#newErnteForm select[name=schlagInput]').val();
 	var dtProHa = getDouble($('#newErnteForm input[name=dtProHa]').val());
 	var gesamtmenge = getDouble($('#newErnteForm input[name=gesamtmenge]').val());
@@ -812,7 +812,7 @@ function loadAndDisplayActEntry(id) {
 	$('#actDetails ul').append('<li><a href="#fotoList" data-role="button">Fotos</a></li>');
 
 	//display new foto link
-	$('#actDetails ul').append('<li id="takeFoto"> <a id="' + id + '" data-role="button" href="">Foto aufnehmen</a> </li>');
+//	$('#actDetails ul').append('<li id="takeFoto"> <a id="' + id + '" data-role="button" href="">Foto aufnehmen</a> </li>');
 	
 	//don't forget to refresh the list
 	$('#actDetails ul').listview('refresh');
