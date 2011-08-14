@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 public class App extends Activity {
 
-	//private static final String BASE_URL = "http://192.168.178.23:8888";
+//	private static final String BASE_URL = "http://192.168.178.29:8888";
 	private static final String BASE_URL = "http://agri-sys.appspot.com";
 	private static final String LOGIN_URL = BASE_URL + "/mobile/loginstatus.jsp";
 
@@ -158,12 +158,16 @@ public class App extends Activity {
 					}
 					break;
 				case TAKE_PICTURE:
-					Intent intent = new Intent(App.this, CameraPreview.class);
-			        startActivity(intent);
+					onTakePicture();
 			        break;
 			}
 		}
 	};
+	
+	protected void onTakePicture() {
+		Intent intent = new Intent(App.this, CameraPreview.class);
+		startActivity(intent);
+	}
 
 	/**
 	 * when back pressed, go back in web view

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.anteboth.agrisys.mobile" android:versionCode="1"
-	android:versionName="1.0">
+	package="com.anteboth.agrisys.mobile" android:versionCode="1" android:versionName="1.1">
 	
 	<supports-screens android:largeScreens="true"
 		android:normalScreens="true" android:smallScreens="true"
@@ -28,7 +27,7 @@
 	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
 	<uses-permission android:name="android.permission.USE_CREDENTIALS" />
 	
-	<application android:icon="@drawable/icon" android:label="@string/app_name">
+	<application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="true">
 	  	<uses-library android:name="android.test.runner" />
 		<activity 
 			android:name=".App" 
