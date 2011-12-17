@@ -1,6 +1,9 @@
 var baseUrl = 'http://agri-sys.appspot.com';
-//var baseUrl = 'http://192.168.178.23:8888';
+//var baseUrl = 'http://192.168.178.29:8888';
 //var baseUrl = 'http://localhost:8888';
+
+var indexUrl = "index.html";
+var imageUploadUrl = '/upload';
 var schlagData;
 var actListData;
 var stammdaten;
@@ -9,9 +12,21 @@ var initialized = false;
 var longitude = -1;
 var latitude = -1;
 var currentActivity;
-var imageUploadUrl = '/upload';
 var erntejahr = 1970;
-	
+
+function displayMessage(msg) {
+	alert(msg);
+//	console.log(msg);
+}
+
+function blockUI() {
+	window.AGRISYS.showBusyIndicator();	
+}
+
+function unblockUI() {
+	window.AGRISYS.hideBusyIndicator();	
+}
+
 //init
 function init() {
 	blockUI();
@@ -150,13 +165,16 @@ function refreshGeoPosition() {
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(geoSuccess, geoError, { enableHighAccuracy: true });
 	} else {
-		//console.log("Geo location Feature nicht unterstützt!");
+		displayMessage("GEO-Position kann nicht ermittelt werden!");
 	}
 }
 
 function geoSuccess(position) {
 	latitude = position.coords.latitude;
 	longitude = position.coords.longitude;
+	
+	$('#settingsForm #locLongitude').text(longitude);
+	$('#settingsForm #locLatitude').text(latitude);
 }
  
 function geoError(msg) {
@@ -362,6 +380,10 @@ function onSaveNewErnte(form) {
 	save(data);
 }
 
+function reloadPage() {
+	window.location.assign(indexUrl);
+}
+
 function onSaveSettings(form) {
 	var newErntejahr = getDouble($('#settingsForm input[name=erntejahrInput]').val());
 	
@@ -381,6 +403,8 @@ function onSaveSettings(form) {
 				erntejahr = newErntejahr;
 				stammdaten.erntejahr = newErntejahr;
 				updateErntejahrDisplay();
+				//we need to reload the entire page
+				reloadPage();
 			},
 	    	error: function(error) {
 				unblockUI();
@@ -624,6 +648,7 @@ function loadAndDisplaySchlagListData() {
 		success: function(data) {
 			onSchlagDataLoaded(data);
 			postInit2();
+			displayMessage("Schlagdaten geladen");
 			unblockUI();
 		},
 		error: function(error) { 
@@ -866,16 +891,4 @@ function loadAndDisplayActEntry(id) {
 	
 	//don't forget to refresh the list
 	$('#actDetails ul').listview('refresh');
-}
-
-function displayMessage(msg) {
-	alert(msg);
-}
-
-function blockUI() {
-	window.AGRISYS.showBusyIndicator();	
-}
-
-function unblockUI() {
-	window.AGRISYS.hideBusyIndicator();	
 }
