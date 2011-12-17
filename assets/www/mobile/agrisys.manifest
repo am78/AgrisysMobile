@@ -3,11 +3,11 @@ CACHE MANIFEST
 CACHE:
 /favicon.ico
 style.css
-js/jquery.mobile-1.0a4.1.min.js
-js/jquery-1.5.min.js
+js/jquery.mobile-1.0.min.js
+js/jquery-1.6.4.min.js
 js/agrisys.js
 js/geo.js
-jquery.mobile-1.0a4.1.min.css
+jquery.mobile-1.0.min.css
 images/aussaat.png
 images/boden.png
 images/duengung.png
